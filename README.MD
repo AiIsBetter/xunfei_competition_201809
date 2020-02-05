@@ -8,9 +8,9 @@
 2.特征工程：
 点击率预测比赛，常用的特征基本上就是统计类特征和点击率特征，基本上都扔进去分数就0.42+。这里记录下提分最明显的特征，减少了0.001+。uesr_tags这个多值特征，一开始没有怎么管，清洗完后就labelencode就扔进去了，后来觉得里面信息没有怎么学习到，就开始想怎么处理这个特征。通过将每个多值特征里面的单一id取出，统计总数后查看分布，就发现每一个id特征对应类似广告id之类的特征的分布还是有明显不同，比如下图是user_tags中每个特征值的对应广告id的点击率分布：
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1227/204459_575c5786_1805564.png "1545914656(1).png")
+![输入图片说明](https://github.com/AiIsBetter/Kaggle/blob/master/xunfei_competition_201809/IMG/XUNFEI1.png)
 
-![输入图片说明](https://images.gitee.com/uploads/images/2018/1227/204623_8c6a50f5_1805564.png "1545914767(1).png")
+![输入图片说明](https://github.com/AiIsBetter/Kaggle/blob/master/xunfei_competition_201809/IMG/XUNFEI2.png)
 
 从上图可以看出，用户属性中的每个属性值，对于不同的id类特征分布不同，可以表达每个用户属性对于各种广告还是有偏好，因此可以统计每个user_tags对于每个id类特征的数目和点击率等特征，具体操作在2_user_tags_feature-id中可以看到。这个特征工程只生成了10多个特征，加入到500+特征的特征集后依然有较大提升，说明uesr_tags的挖掘是十分重要的，能够挖掘出强特征。另外，开始对uesr_tags label encode后，训练效果一般，主要是内存不够one hot会崩掉程序，后来one hot后存入稀疏矩阵，勉强跑完了，又有差不多0.0008万分点提升，可见多值特征简单的label encode不是理想的方式，内存足够的情况下还是one hot，同时维度太大的话要考虑只提取重要值，并从其它多个维度来描述这个特征，保证信息尽量多地表达出来。另一个比较有效的特征是在kaggle的比赛分享中学习的，将特征集做stacking，得到的预测值作为新特征放入原特征集进行最终的模型训练，也能有效提分。
 
